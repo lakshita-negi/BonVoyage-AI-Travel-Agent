@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BonVoyage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        /* ===============================
+   CREATIVE FEATURE SLIDER
+================================ */
+
+        .feature-slider-section {
+            width: 100%;
+            padding: 80px 0;
+            background: #eef5ff;
+            text-align: center;
+        }
+
+        .feature-title {
+            font-size: 48px;
+            color: #0d1b3d;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .feature-slider-container {
+            position: relative;
+            max-width: 1100px;
+            height: 450px;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 30px;
+        }
+
+        .feature-slider {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .feature-slide {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Glass Content */
+        .feature-content {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            width: 60%;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border-radius: 18px;
+           color: #0d1b3d;
+            text-align: left;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .feature-content h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .feature-content p {
+            font-size: 18px;
+        }
+
+        /* ARROWS */
+        .f-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            padding: 20px 30px;
+            font-size: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .f-arrow:hover {
+            background: #ffffff;
+        }
+
+        .f-left {
+            left: 15px;
+        }
+
+        .f-right {
+            right: 15px;
+        }
+
+ 
+
+
+
+        /* ===========================
+   FOOTER
+=========================== */
+        .footer {
+            background: white;
+            color: #0d1b3d;
+            padding: 60px 8% 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 50px;
+        }
+
+        .footer-col h3,
+        .footer-col h4 {
+            margin-bottom: 12px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .social-icons i {
+            font-size: 22px;
+            margin-right: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .social-icons i:hover {
+            transform: scale(1.15);
+            color: #a5d8ff;
+        }
+
+        .footer-bottom {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #0d1b3d;;
+        }
+
+        /* ===========================
+   RESPONSIVE
+=========================== */
+        @media (max-width: 768px) {
+
+            .hiw-container,
+            .card-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hiw-left,
+            .hiw-right,
+            .hiw-left1,
+            .hiw-right1,
+            .left-box,
+            .right-box {
+                width: 100%;
+            }
+        }
+
+
+        .feature-slider-section {
+            width: 100%;
+            padding: 80px 0;
+            background: #eef5ff;
+            text-align: center;
+        }
+
+        .feature-title {
+            font-size: 48px;
+            color: #0d1b3d;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .feature-slider-container {
+            position: relative;
+            max-width: 1100px;
+            height: 450px;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 30px;
+        }
+
+        .feature-slider {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .feature-slide {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Glass Content */
+        .feature-content {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            width: 60%;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            border-radius: 18px;
+            color: white;
+            text-align: left;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .feature-content h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .feature-content p {
+            font-size: 18px;
+        }
+
+        /* DOTS */
+        .feature-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .feature-dot {
+            width: 14px;
+            height: 14px;
+            background: #cdd8f5;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .feature-dot.active {
+            background: #0d1b3d;
+            transform: scale(1.3);
+        }
+/* ============================
+   CTA FULL BACKGROUND SECTION
+============================== */
+
+.cta-centered {
+    width: 100%;
+    height: 100vh;
+    background-image: url('/images/6345959.jpg') !important; /* Your working image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   text-align: center;
+
+    position: relative;
+    /* color: white; */
+}
+
+/* ============================
+   CTA FULL BACKGROUND SECTION
+============================== */
+
+.cta-centered {
+    width: 100%;
+    height: 100vh;
+
+    background-image: url('/images/6345959.jpg') !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    position: relative;
+    color: rgb(7, 34, 75);
+}
+
+/* Overlay for readability */
+.cta-centered::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+}
+
+/* Content */
+.cta-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    padding: 20px;
+}
+
+.cta-content h1 {
+    font-size: 60px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.cta-content p {
+    font-size: 22px;
+    margin-bottom: 35px;
+    line-height: 1.5;
+}
+
+/* Button */
+.cta-btn {
+    padding: 16px 40px;
+    font-size: 20px;
+    border: none;
+    border-radius: 40px;
+    background: #0184a8;
+    color: #001B40;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.cta-btn:hover {
+    background: #DDEBE5;
+    color: #001B40;
+    transform: translateY(-3px);
+}
+
+
+.cta-btn:hover {
+    background: #DDEBE5;
+    color: #001B40;
+}
+/* Optional dark overlay for readability */
+.cta-centered::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.072); /* adjust 0.45 → brightness */
+}
+
+.cta-inner h1{
+    font-size: xx-large;
+}
+/* ------------------------------
+   FEATURE SECTION
+--------------------------------*/
+.features-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.features-title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 50px;
+    /* font-family: 'BlackerSans', sans-serif;  */
+}
+
+/* GRID */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+/* CARD */
+.feature-card {
+    background: #fafafa;
+    padding: 35px 30px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.04);
+    position: relative;
+    transition: 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.06);
+}
+
+/* ICON */
+.icon {
+    font-size: 32px;
+    margin-bottom: 15px;
+    /* color: #000; */
+}
+
+/* BADGE */
+.badge {
+    background: #000;
+    color: #fff;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+/* HEADINGS & TEXT */
+.feature-card h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    /* font-family: 'BlackerSans', sans-serif; */
+}
+
+.feature-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+    /* color: #333; */
+    /* font-family: 'BlackerSans', sans-serif; */
+}
+
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAV -->
+    <header class="top-nav">
+        <div class="menu-icon" onclick="openSidebar()">
+            <span class="line short"></span>
+            <span class="line long"></span>
+        </div>
+
+        <div class="logo">
+            BonVoyage
+        </div>
+
+        <div class="right-buttons">
+            <a href="#" class="login">Log in</a>
+            <a href="/chat" class="get-started">Get Started</a>
+        </div>
+    </header>
+
+    <!-- OVERLAY -->
+    <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-sparkles"></i>
+            <h2>BonVoyage</h2>
+            <span class="close-btn" onclick="closeSidebar()">×</span>
+        </div>
+
+        <ul class="sidebar-links">
+            <li><i class="fa-regular fa-comment"></i>&nbsp;&nbsp;Start chatting</li>
+            <li><i class="fas fa-search"></i>&nbsp;&nbsp;Explore</li>
+            <!-- <li>&nbsp;&nbsp;Get inspired</li> -->
+            <li><i class="fa-solid fa-phone"></i>&nbsp;&nbsp;Contact Us</li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="login-btn">Log in</button>
+            <button class="start-btn">Get Started</button>
+            <p>© 2025 BonVoyage.</p>
+        </div>
+    </aside>
+
+    <!-- HERO SECTION WITH BACKGROUND VIDEO -->
+    <section class="hero">
+
+        <!-- Background Video -->
+        <video autoplay loop muted playsinline class="hero-video">
+            <source src=".\images\Video Project.mp4" type="video/mp4">
+        </video>
+
+        <!-- Overlay -->
+        <div class="hero-overlay"></div>
+
+        <!-- Center Text -->
+        <div class="hero-content">
+            <h1>Discover Your Next Adventure</h1>
+            <p> <i>BonVoyage</i>, your <b>personal AI </b> travel partner—helping you explore, plan, and enjoy the world
+                effortlessly.</p>
+
+            <a href="/chat" class="hero-btn">
+                <i class="fa-solid fa-compass"></i> Start Exploring
+            </a>
+        </div>
+
+    </section>
+
+    <section class="how-it-works">
+
+        <h1 class="hiw-title">How It Works</h1>
+
+        <div class="hiw-container">
+
+            <div class="hiw-left">
+                <h1>Start chatting with us.</h1>
+                <p>
+                    Need a place to go or a full trip plan?
+                    Just tell us what kind of travel energy you’re craving—sunny coasts, mountain adventures, iconic
+                    food spots, cultural hotspots, or quiet retreats—and we’ll craft the
+                    perfect journey for you.
+                </p>
+            </div>
+
+            <div class="hiw-right">
+                <img src="images/Screenshot 2025-11-19 125440.png" alt="How It Works">
+            </div>
+
+        </div>
+    </section>
+
+    <section class="how-it-works1">
+
+        <div class="hiw-left1">
+            <img src="images/ChatGPT Image Nov 19, 2025, 08_07_49 PM.png" alt="How It Works">
+        </div>
+
+        <div class="hiw-right1">
+            <h1>Itineraries.</h1>
+            <p>
+                Receive a detailed itinerary complete with must-see attractions, dining recommendations, and
+                hidden gems tailored to your interests. Whether you're into history, food, nature, or nightlife,
+                we've got you covered.
+            </p>
+        </div>
+
+    </section>
+    <section class="feature-slider-section">
+
+        <h2 class="feature-title">BonVoyage Features</h2>
+
+        <div class="feature-slider-container">
+
+            <div class="feature-slider">
+
+                <!-- Slide 1 -->
+                <div class="feature-slide"
+                    style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');">
+                    <div class="feature-content">
+                        <h1>Destination Suggestions</h1>
+                        <p>Get AI-powered travel recommendations based on your budget, season, interests, and travel style—personalized just for you.</p>
+                    </div>
+                </div>
+
+                <div class="feature-slide"
+                    style="background-image: url('/images/s%20(2).jpg');">
+                    <div class="feature-content">
+                        <h1> Activities & Experiences Explorer</h1>
+                        <p>Find the best local activities, tours, and experiences tailored to your interests and destination.
+Includes pricing, availability, and booking options for a hassle-free adventure.</p>
+                    </div>
+                </div>
+
+
+                <!-- Slide 2 -->
+                <div class="feature-slide"
+                    style="background-image: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1');">
+                    <div class="feature-content">
+                        <h1> Instant Itinerary Generator</h1>
+                        <p>Receive a day-wise travel plan instantly, complete with top attractions, timings, routes, and hidden gems.
+                            Enjoy smart routing and optimized travel time, so you explore more and waste less.</p>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="feature-slide"
+                    style="background-image: url('/images/s%20(3).jpg');">
+                    <div class="feature-content">
+                        <h1> Hotel & Stay Finder</h1>
+                        <p>Discover and compare best-rated hotels, hostels, and stays with price options and booking links.
+                            Get personalized stay suggestions based on budget, location, and comfort preference.</p>
+                    </div>
+                </div>
+
+                <div class="feature-slide"
+                    style="background-image: url('/images/s%20(1).jpg' );"> 
+                    <div class="feature-content">
+                        <h1> Language & Phrase Helper</h1>
+                        <p>Instant translations and travel phrases to help you communicate easily anywhere in the world.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Dots -->
+        <div class="feature-dots">
+            <div class="feature-dot active" onclick="moveToSlide(0)"></div>
+            <div class="feature-dot" onclick="moveToSlide(1)"></div>
+            <div class="feature-dot" onclick="moveToSlide(2)"></div>
+            <div class="feature-dot" onclick="moveToSlide(3)"></div>
+            <div class="feature-dot" onclick="moveToSlide(4)"></div>
+
+        </div>
+
+    </section>
+
+    <!-- CARDS FEATURE SECTION -->
+    <section class="card-section">
+
+        <div class="left-box">
+            <h1>Smart Travel Suggestions</h1>
+            <p><br>
+                Discover hand-picked destinations, hidden gems, and city highlights crafted
+                based on your travel vibe. Save locations you love and curate your perfect trip.
+                
+            </p>
+
+            <div class="card-one">
+                <img src="images/card1.png" class="bg-img">
+            </div>
+        </div>
+
+        <div class="right-box">
+            <h1>Build Your Own <br> Plan</h1>
+            <p>
+                Get customized itineraries in seconds. Choose your dates, select activities,
+                and let BonVoyage generate a day-wise travel route just for you.
+            </p><br>
+
+            <div class="card-two">
+                <img src="images/card2.png" class="hotel-img"><br>
+            </div>
+        </div>
+        </div>
+
+    </section>
+    <section class="features-section">
+    <h1 class="features-title">Organize it all in one place.</h1>
+
+    <div class="features-grid">
+
+        <!-- Hotels -->
+        <div class="feature-card">
+            <i class="fas fa-hotel icon"></i>
+            <h2>Hotels</h2>
+            <p>Stay at the best hotels around the world for the best prices.</p>
+        </div>
+
+        <!-- Car Rental -->
+        <div class="feature-card">
+            <i class="fas fa-car icon"></i>
+            <span class="badge">Coming soon</span>
+            <h2>Car Rental</h2>
+            <p>Unlock deals on any type of wheels and hit the road.</p>
+        </div>
+
+        <!-- Flights -->
+        <div class="feature-card">
+            <i class="fas fa-plane-departure icon"></i>
+            <h2>Flights</h2>
+            <p>Get real-time airfares for anywhere you want to jet off to.</p>
+        </div>
+
+        <!-- Restaurants -->
+        <div class="feature-card">
+            <i class="fas fa-utensils icon"></i>
+            <h2>Restaurants</h2>
+            <p>Snag a coveted table at the hottest restaurants.</p>
+        </div>
+
+        <!-- Experiences -->
+        <div class="feature-card">
+            <i class="fas fa-icons icon"></i>
+            <h2>Experiences</h2>
+            <p>Make reservations for your favorite activities, then make memories.</p>
+        </div>
+
+        <!-- Tours -->
+        <div class="feature-card">
+            <i class="fas fa-route icon"></i>
+            <span class="badge">Coming soon</span>
+            <h2>Tours</h2>
+            <p>Get an insider’s perspective on any location or attraction.</p>
+        </div>
+
+    </div>
+</section>
+
+
+
+<section class="cta-centered">
+    <div class="cta-content">
+        <h1>Plan Smarter. Travel Better with BonVoyage AI.</h1>
+        <p>Your intelligent travel companion — helping you discover destinations, build trips, 
+           and explore the world effortlessly.</p>
+        <a href="C:\Users\hp\Desktop\myapp\views\index.ejs">
+            <button class="cta-btn">Start Planning</button>
+
+        </a>
+    </div>
+</section>
+
+    <footer class="footer">
+        <div class="footer-content">
+
+            <div class="footer-col">
+                <h3>BonVoyage</h3>
+                <p>Your AI travel partner for seamless adventures.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                   <a href="F:\chatbot.html" style="text-decoration: none;"><li>Start Chatting</li></a> 
+                    <li>Explore</li>
+                    <li>Contact</li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-twitter"></i>
+                </div>
+            </div>
+
+        </div>
+
+        <p class="footer-bottom"><b style="font-family: sans-serif;"> &copy; 2025</b> BonVoyage. All rights reserved.</p>
+    </footer>
+
+    </section>
+
+
+    <script>
+        function openSidebar() {
+            document.getElementById("sidebar").classList.add("open");
+            document.getElementById("overlay").classList.add("show");
+        }
+
+        function closeSidebar() {
+            document.getElementById("sidebar").classList.remove("open");
+            document.getElementById("overlay").classList.remove("show");
+        }
+
+        let featureIndex = 0;
+        const slides = document.querySelectorAll(".feature-slide");
+        const dots = document.querySelectorAll(".feature-dot");
+
+        function moveToSlide(index) {
+            featureIndex = index;
+            document.querySelector(".feature-slider").style.transform =
+                `translateX(-${index * 100}%)`;
+
+            dots.forEach(dot => dot.classList.remove("active"));
+            dots[index].classList.add("active");
+        }
+
+        function autoSlide() {
+            featureIndex = (featureIndex + 1) % slides.length;
+            moveToSlide(featureIndex);
+        }
+
+        setInterval(autoSlide, 3000); // 2 seconds
+    </script>
+
+</body>
+
+</html>
