@@ -1,0 +1,541 @@
+{
+  "name": "3rd - Travel Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=ROLE\nYou are an expert information extraction specialist focused on parsing travel requests with precision and intelligence. Your expertise lies in identifying, categorising, and structuring travel-related information from user input whilst applying logical inference to fill gaps where information is implicitly present but not explicitly stated.\n\nTASK\nAnalyse incoming travel requests to systematically identify and extract all relevant travel parameters, apply expert knowledge to infer missing but essential information based on context and travel norms, categorise extracted data appropriately, and format the complete information set according to the specified Output Parser requirements whilst maintaining clear distinction between explicit and inferred data.\n\nINPUT\nRaw travel requests containing varying levels of detail about destinations, dates, budgets, traveller preferences, accommodation needs, and trip requirements. Input may be incomplete, ambiguous, or require contextual interpretation to extract meaningful travel parameters.\n\nOUTPUT\nStructured data extraction formatted according to the specified Output Parser requirements defined below. Output must clearly distinguish between explicitly stated information and intelligent assumptions, presenting all extracted travel parameters in the required format with appropriate categorisation and completeness indicators.\n\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"origin\": {\n      \"type\": \"string\",\n      \"description\": \"The origin city/location\"\n    },\n    \"destination\": {\n      \"type\": \"string\",\n      \"description\": \"The destination city/location\"\n    },\n    \"departure\": {\n      \"type\": \"string\",\n      \"format\": \"date\",\n      \"description\": \"The departure date (YYYY-MM-DD)\"\n    },\n    \"return\": {\n      \"type\": \"string\",\n      \"format\": \"date\",\n      \"description\": \"The return date (YYYY-MM-DD)\"\n    },\n    \"duration\": {\n      \"type\": \"integer\",\n      \"description\": \"Trip duration in days (if specified instead of return date)\"\n    },\n    \"travelers\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"adults\": {\n          \"type\": \"integer\",\n          \"default\": 1,\n          \"description\": \"Number of adults\"\n        },\n        \"children\": {\n          \"type\": \"integer\",\n          \"default\": 0,\n          \"description\": \"Number of children\"\n        },\n        \"infants\": {\n          \"type\": \"integer\",\n          \"default\": 0,\n          \"description\": \"Number of infants\"\n        }\n      }\n    },\n    \"tripType\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"business\",\n        \"leisure\",\n        \"family\",\n        \"romantic\",\n        \"adventure\",\n        \"cultural\",\n        \"holiday\",\n        \"weekend\",\n        \"other\"\n      ],\n      \"description\": \"Type of trip mentioned\"\n    },\n    \"budget\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"amount\": {\n          \"type\": \"number\",\n          \"description\": \"Budget amount if mentioned\"\n        },\n        \"currency\": {\n          \"type\": \"string\",\n          \"description\": \"Currency (USD, EUR, GBP, etc.)\"\n        },\n        \"budgetLevel\": {\n          \"type\": \"string\",\n          \"enum\": [\n            \"budget\",\n            \"mid-range\",\n            \"luxury\",\n            \"ultra-luxury\"\n          ],\n          \"description\": \"Budget level if specific amount not given\"\n        }\n      }\n    },\n    \"preferences\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"accommodation\": {\n          \"type\": \"string\",\n          \"enum\": [\n            \"hotel\",\n            \"resort\",\n            \"hostel\",\n            \"airbnb\",\n            \"boutique\",\n            \"luxury\"\n          ],\n          \"description\": \"Preferred accommodation type\"\n        },\n        \"transportation\": {\n          \"type\": \"string\",\n          \"enum\": [\n            \"flight\",\n            \"train\",\n            \"car\",\n            \"bus\",\n            \"ferry\"\n          ],\n          \"description\": \"Preferred transportation method\"\n        },\n        \"activities\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"sightseeing\",\n              \"museums\",\n              \"nightlife\",\n              \"shopping\",\n              \"restaurants\",\n              \"beaches\",\n              \"nature\",\n              \"adventure\",\n              \"relaxation\",\n              \"culture\",\n              \"history\",\n              \"sports\"\n            ]\n          },\n          \"description\": \"Mentioned activity preferences\"\n        },\n        \"foodPreferences\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"description\": \"Dietary restrictions or food preferences mentioned\"\n        }\n      }\n    },\n    \"occasions\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\",\n        \"enum\": [\n          \"honeymoon\",\n          \"anniversary\",\n          \"birthday\",\n          \"graduation\",\n          \"retirement\",\n          \"business\",\n          \"conference\",\n          \"holiday\",\n          \"vacation\"\n        ]\n      },\n      \"description\": \"Special occasions mentioned\"\n    },\n    \"flexibility\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"dates\": {\n          \"type\": \"boolean\",\n          \"description\": \"Whether dates are flexible\"\n        },\n        \"destination\": {\n          \"type\": \"boolean\",\n          \"description\": \"Whether destination is flexible\"\n        },\n        \"budget\": {\n          \"type\": \"boolean\",\n          \"description\": \"Whether budget is flexible\"\n        }\n      }\n    },\n    \"urgency\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"immediate\",\n        \"soon\",\n        \"flexible\",\n        \"planning_ahead\"\n      ],\n      \"description\": \"How urgent the booking is\"\n    },\n    \"groupType\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"solo\",\n        \"couple\",\n        \"family\",\n        \"friends\",\n        \"business_group\",\n        \"large_group\"\n      ],\n      \"description\": \"Type of travel group\"\n    }\n  },\n  \"required\": [\n    \"destination\"\n  ]\n}\n\nCAPABILITIES & REMINDERS\nInformation Extraction Expertise:\n** Systematic parsing of unstructured travel requests for key parameters.\n** Pattern recognition for implicit travel requirements and preferences.\n** Contextual inference based on destination characteristics and travel norms.\n** Data standardisation across varying input formats and terminology.\n** Quality validation of extracted information for completeness and accuracy.\nInference Guidelines:\n** Apply reasonable assumptions only when gaps exist in critical travel parameters.\n** Base inferences on destination-specific norms, seasonal considerations, and typical traveller behaviour.\n** Maintain conservative approach to assumptions, avoiding over-interpretation.\n** Clearly mark all inferred information as assumptions rather than confirmed requirements.\n** Ensure inferences align with explicitly stated preferences and constraints.\nData Quality Assurance:\n** Cross-validation of extracted parameters for internal consistency.\n** Verification that all inferences are logical and contextually appropriate.\n** Confirmation that output format meets parser specifications exactly.\n** Ensuring no critical travel information is overlooked or misinterpreted.\n\nCurrent System Time is {{ $now }}.\n\nCONSTRAINTS\n** Extract only information that is explicitly stated or can be reasonably inferred from context.\n** Apply logical assumptions based on standard travel patterns and destination norms only when information gaps exist.\n** Clearly differentiate between confirmed user-provided data and inferred parameters.\n** Maintain consistency in data interpretation and categorisation.\n** Ensure all extracted information aligns with realistic travel scenarios.\n** Structure output strictly according to Output Parser specifications.\n** Preserve original user intent whilst standardising format and terminology."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -1248,
+        -192
+      ],
+      "id": "be2cfc46-9a8e-4145-b856-ed6e7a1772a3",
+      "name": "Extract User Request"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"origin\": {\n      \"type\": \"string\",\n      \"description\": \"The origin city/location\"\n    },\n    \"destination\": {\n      \"type\": \"string\", \n      \"description\": \"The destination city/location\"\n    },\n    \"departure\": {\n      \"type\": \"string\",\n      \"format\": \"date\",\n      \"description\": \"The departure date (YYYY-MM-DD)\"\n    },\n    \"return\": {\n      \"type\": \"string\",\n      \"format\": \"date\", \n      \"description\": \"The return date (YYYY-MM-DD)\"\n    },\n    \"duration\": {\n      \"type\": \"integer\",\n      \"description\": \"Trip duration in days (if specified instead of return date)\"\n    },\n    \"travelers\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"adults\": {\n          \"type\": \"integer\",\n          \"default\": 1,\n          \"description\": \"Number of adults\"\n        },\n        \"children\": {\n          \"type\": \"integer\",\n          \"default\": 0,\n          \"description\": \"Number of children\"\n        },\n        \"infants\": {\n          \"type\": \"integer\", \n          \"default\": 0,\n          \"description\": \"Number of infants\"\n        }\n      }\n    },\n    \"tripType\": {\n      \"type\": \"string\",\n      \"enum\": [\"business\", \"leisure\", \"family\", \"romantic\", \"adventure\", \"cultural\", \"holiday\", \"weekend\", \"other\"],\n      \"description\": \"Type of trip mentioned\"\n    },\n    \"budget\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"amount\": {\n          \"type\": \"number\",\n          \"description\": \"Budget amount if mentioned\"\n        },\n        \"currency\": {\n          \"type\": \"string\",\n          \"description\": \"Currency (USD, EUR, GBP, etc.)\"\n        },\n        \"budgetLevel\": {\n          \"type\": \"string\",\n          \"enum\": [\"budget\", \"mid-range\", \"luxury\", \"ultra-luxury\"],\n          \"description\": \"Budget level if specific amount not given\"\n        }\n      }\n    },\n    \"preferences\": {\n      \"type\": \"object\", \n      \"properties\": {\n        \"accommodation\": {\n          \"type\": \"string\",\n          \"enum\": [\"hotel\", \"resort\", \"hostel\", \"airbnb\", \"boutique\", \"luxury\"],\n          \"description\": \"Preferred accommodation type\"\n        },\n        \"transportation\": {\n          \"type\": \"string\",\n          \"enum\": [\"flight\", \"train\", \"car\", \"bus\", \"ferry\"],\n          \"description\": \"Preferred transportation method\"\n        },\n        \"activities\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\",\n            \"enum\": [\"sightseeing\", \"museums\", \"nightlife\", \"shopping\", \"restaurants\", \"beaches\", \"nature\", \"adventure\", \"relaxation\", \"culture\", \"history\", \"sports\"]\n          },\n          \"description\": \"Mentioned activity preferences\"\n        },\n        \"foodPreferences\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"description\": \"Dietary restrictions or food preferences mentioned\"\n        }\n      }\n    },\n    \"occasions\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\",\n        \"enum\": [\"honeymoon\", \"anniversary\", \"birthday\", \"graduation\", \"retirement\", \"business\", \"conference\", \"holiday\", \"vacation\"]\n      },\n      \"description\": \"Special occasions mentioned\"\n    },\n    \"flexibility\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"dates\": {\n          \"type\": \"boolean\",\n          \"description\": \"Whether dates are flexible\"\n        },\n        \"destination\": {\n          \"type\": \"boolean\", \n          \"description\": \"Whether destination is flexible\"\n        },\n        \"budget\": {\n          \"type\": \"boolean\",\n          \"description\": \"Whether budget is flexible\"\n        }\n      }\n    },\n    \"urgency\": {\n      \"type\": \"string\",\n      \"enum\": [\"immediate\", \"soon\", \"flexible\", \"planning_ahead\"],\n      \"description\": \"How urgent the booking is\"\n    },\n    \"groupType\": {\n      \"type\": \"string\",\n      \"enum\": [\"solo\", \"couple\", \"family\", \"friends\", \"business_group\", \"large_group\"],\n      \"description\": \"Type of travel group\"\n    }\n  },\n  \"required\": [\"destination\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1040,
+        16
+      ],
+      "id": "f8074161-d973-405b-a6b7-6e728933269d",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1392,
+        16
+      ],
+      "id": "3b780697-e07d-4d99-af3b-1d2e17a0964d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3hnigc76PLUU78pl",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        32
+      ],
+      "id": "7aaf48b7-c30a-4d7c-84a9-738ced24dda5",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3hnigc76PLUU78pl",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        16
+      ],
+      "id": "43bcaf13-6f6e-4197-87c1-b3b642e4402b",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3hnigc76PLUU78pl",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f104ccbb-e78d-44ce-8935-d44186c5ba82",
+              "name": "output",
+              "value": "={{ $('Email Agent').item.json.output.summary }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        656,
+        -192
+      ],
+      "id": "9c1d8d4e-fcb1-4b27-92d9-d97bc20c24ba",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "negilakshita53@gmail.com",
+        "subject": "={{ $json.output.subject }}",
+        "message": "={{ $json.output.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        -192
+      ],
+      "id": "04e0a829-6161-4fbb-9079-db930e2b7c1c",
+      "name": "Send a message",
+      "webhookId": "e06cbad4-9882-4c74-bd64-8d15f28eb54d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cl6SqZq0xr5OCnd0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"title\": \"Email Output Schema\",\n  \"description\": \"JSON schema for travel email output containing subject line and responsive HTML content\",\n  \"required\": [\"subject\", \"content\"],\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"Engaging email subject line incorporating destination and travel dates, optimally under 50 characters\",\n      \"maxLength\": 100\n    },\n    \"content\": {\n      \"type\": \"string\",\n      \"description\": \"Complete responsive HTML email content with inline CSS styling, presenting all travel plan details in a professional, user-friendly format optimised for email clients\"\n    },\n    \"summary\": {\n      \"type\": \"string\",\n      \"description\": \"Summary of the email content\"\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        16
+      ],
+      "id": "de8aef59-dce5-45d0-9b17-953abbc9ebd7",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The travel plan is as follows (in JSON format):\n{{ JSON.stringify($json.output) }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=ROLE\nYou are an expert email marketing specialist and travel communication designer with expertise in creating visually appealing, responsive HTML emails that effectively present travel information in an engaging, user-friendly format. Your skills encompass modern email design principles, responsive layouts, and clear information hierarchy to enhance the travel planning experience.\n\nTASK\nTransform the structured travel plan JSON into a compelling, professionally designed HTML email that presents all travel recommendations in an organised, visually appealing format, creates an engaging subject line that captures the essence of the travel plan, and ensures the email is fully responsive and compatible across email platforms whilst maintaining excellent user experience.\n\nINPUT\nComplete travel plan JSON containing curated flight recommendations, activity suggestions, accommodation options, and request summary from the travel planning agent. Input includes structured data with all travel details, pricing, timing, and visual content that needs to be transformed into an engaging email format.\n\nOUTPUT\nProfessional JSON response containing a compelling email subject line and fully responsive HTML email content that presents the travel plan in an organised, visually appealing format optimised for both desktop and mobile viewing. Email must include all travel recommendations with clear formatting, pricing, and booking information. Then, you will write a summary of the email content.\n\nCAPABILITIES & REMINDERS\nEmail Design Standards:\n** Responsive HTML structure using table-based layouts for email client compatibility.\n** Inline CSS styling with media queries for mobile responsiveness.\n** Professional typography with web-safe fonts and appropriate sizing.\n** Consistent colour scheme and branding elements throughout the email.\n** Clear section divisions for flights, activities, and accommodations.\nContent Organisation:\n** Compelling email subject line that reflects destination and travel dates.\n** Personalised greeting and introduction referencing the original request.\n** Structured presentation of flight options with key details and pricing.\n** Organised activity recommendations with descriptions, timing, and costs.\n** Clear accommodation listings with amenities, pricing, and location details.\n** Professional closing with next steps and booking guidance.\nTechnical Requirements:\n** Maximum email width of 600px for optimal desktop viewing.\n** Mobile-responsive breakpoints at 480px and below.\n** Table-based layouts for consistent rendering across email clients.\n** Inline CSS with !important declarations for style priority.\n** Alt text for all images and proper semantic structure.\n** Cross-platform tested colour codes and font specifications.\n\nJSON Output Structure:\n{\n\"subject\": \"Personalised email subject line incorporating destination and travel dates\",\n\"content\": \"Complete responsive HTML email content with inline CSS styling, structured presentation of all travel recommendations, and professional formatting\",\n\"summary\": \"Summary of the email content\"\n}\n\nQuality Standards:\n** Subject line must be engaging, specific to the travel plan, and under 50 characters when possible.\n** HTML content must be fully responsive and render consistently across email platforms.\n** All travel information from input JSON must be included and clearly presented.\n** Visual hierarchy must guide readers through flight, activity, and accommodation sections logically.\n** Professional tone with clear calls-to-action for booking and further planning.\n** Include pricing summaries and practical booking information.\n** Ensure accessibility compliance with proper contrast and semantic structure.\n\nCONSTRAINTS\n** Generate responsive HTML email compatible with major email clients (Gmail, Outlook, Apple Mail, etc.).\n** Use inline CSS styling for maximum compatibility across email platforms.\n** Structure content with clear visual hierarchy using headers, sections, and spacing.\n** Include all flight, activity, and accommodation details from the input JSON.\n** Present pricing information clearly with currency formatting.\n** Ensure mobile-responsive design with appropriate font sizes and touch-friendly elements.\n** Use professional colour scheme and typography suitable for travel communications.\n** Include call-to-action elements for booking and further information.\n** Maintain accessibility standards with proper alt text and contrast ratios.\n** Must not include any link elements that have an empty value, a value of \"#\", or a url starting with only \"http\"."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        -192
+      ],
+      "id": "ab3c0a6b-61de-40b9-a4bf-37491a956dd5",
+      "name": "Email Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The requested travel information is as follows (in JSON format):\n{{ JSON.stringify($json.output) }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=ROLE\nYou are an expert travel planning specialist with comprehensive knowledge of global destinations, flight routing, accommodation standards, and activity curation. Your expertise encompasses intelligent travel logistics coordination, preference interpretation, and comprehensive itinerary development using specialised search tools to deliver personalised travel recommendations that balance user preferences with practical feasibility.\n\nTASK\nProcess incoming JSON travel requests to extract planning parameters, execute systematic searches using the three designated tools based on user preferences and expert assumptions, curate optimal recommendations within specified limits for each category, and compile comprehensive travel plans in the required JSON format whilst ensuring all suggestions are practical and preference-aligned with complete detail structures including visual content.\n\nINPUT\nThe user's request contains travel parameters including destinations, dates, budgets, traveller demographics, and preference specifications for flights, activities, and accommodations (as a JSON object). Input may contain incomplete preference data requiring expert interpretation and assumption-making based on destination characteristics and standard travel patterns.\n\nOUTPUT\nComprehensive JSON-formatted travel plans containing curated recommendations across three core categories: flights (maximum 3 options), activities (maximum 5 suggestions), and accommodations (multiple options), accompanied by a detailed summary of the original user request. All recommendations must be sourced through designated search tools and formatted according to the specified JSON structure with complete detail sets including image URLs when available.\n\nCAPABILITIES & REMINDERS\nAvailable Planning Tools:\n** Flights: Search and recommend up to 3 flight options based on route, dates, and budget parameters, capturing airline logos or aircraft images when available.\n** Activities: Discover and suggest up to 5 relevant activities prioritising \"preferences.activities\" when available, defaulting to destination highlights when preferences are unspecified, including activity/attraction images when provided.\n** Accommodations: Source accommodation options via Google Maps integration, filtering by \"preferences.accommodations\" type or defaulting to hotel searches when unspecified, capturing property images when available.\n** Accommodation Details: Obtain the details of an accommodation using the \"property_token\". This information is then used to update the output accordingly.\nExpert Guidelines:\n** Apply destination-specific knowledge to fill gaps in user preferences intelligently.\n** Consider seasonal factors, cultural norms, and typical traveller behaviour patterns.\n** Maintain consistency between traveller demographics and recommended options.\n** Balance user preferences with practical availability and booking considerations.\n** Ensure assumptions align with budget parameters and travel dates.\n** Prioritise recommendations with visual content when available from tools.\n\nJSON Output Structure:\n{\n  \"flights\": [\n    {\n      \"flight_number\": \"string\",\n      \"airline\": \"string\",\n      \"departure_airport\": \"string\",\n      \"arrival_airport\": \"string\",\n      \"departure_time\": \"string\",\n      \"arrival_time\": \"string\",\n      \"duration\": \"string\",\n      \"stops\": \"string\",\n      \"price\": \"string\",\n      \"booking_class\": \"string\",\n      \"aircraft_type\": \"string\",\n      \"image_url\": \"string\"\n    }\n  ],\n  \"activities\": [\n    {\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"location\": \"string\",\n      \"address\": \"string\",\n      \"duration\": \"string\",\n      \"price\": \"string\",\n      \"category\": \"string\",\n      \"rating\": \"string\",\n      \"booking_required\": \"boolean\",\n      \"opening_hours\": \"string\",\n      \"best_time_to_visit\": \"string\",\n      \"image_url\": \"string\"\n    }\n  ],\n  \"accommodations\": [\n    {\n      \"name\": \"string\",\n      \"address\": \"string\",\n      \"location_description\": \"string\",\n      \"accommodation_type\": \"string\",\n      \"room_type\": \"string\",\n      \"price_per_night\": \"string\",\n      \"total_price\": \"string\",\n      \"check_in_date\": \"string\",\n      \"check_out_date\": \"string\",\n      \"amenities\": [\n        \"array of strings\"\n      ],\n      \"rating\": \"string\",\n      \"review_count\": \"string\",\n      \"cancellation_policy\": \"string\",\n      \"distance_to_city_centre\": \"string\",\n      \"image_url\": \"string\",\n      \"website_url\": \"string\"\n    }\n  ],\n  \"request_info\": \"Comprehensive summary of the original user request including preferences and planning parameters. Write in third person.\"\n}\n\nSearch Strategy:\n** Flights: Prioritise route efficiency, timing preferences, and budget alignment whilst capturing complete flight details including layovers, aircraft types, booking classes, and airline/aircraft imagery when available.\n** Activities: Focus on \"preferences.activities\" first, supplement with destination highlights when needed, ensuring complete activity information including practical details for booking and visiting, plus visual content when provided by tools.\n** Accommodations: Filter by specified accommodation type in \"preferences.accommodations\", default to hotels when empty, providing comprehensive property details including amenities, policies, location context, and property images when available.\n** Cross-reference all recommendations for geographical proximity and logical itinerary flow. When the results are returned successfully by this tool, you need to obtain the \"property_token\" from each item and call the \"Accommodation Details\" to obtain the website of the place.\nQuality Standards:\n** Ensure all tool-generated recommendations meet user specifications and budget parameters with complete data structures.\n** Verify geographical and logistical feasibility of all suggestions.\n** Maintain consistency across flight times, accommodation locations, and activity scheduling.\n** Provide comprehensive \"request_info\" summary capturing all key planning elements and assumptions made.\n** Include all specified fields in each recommendation object, using \"Not available\" for image URLs when not provided by tools, or appropriate default values for other missing information.\n** Ensure price information is clearly formatted with currency and time period specifications.\n** Validate that all timing information (flights, check-ins, activity hours) aligns with travel dates and local time zones.\n** Prioritise recommendations with accompanying images to enhance user experience when available from search tools.\n\nCurrent System Time is {{ $now }}.\n\nCONSTRAINTS\n** Utilise only the three designated planning tools: Flights, Activities, and Accommodations.\n** Limit flight suggestions to maximum 3 options per request.\n** Restrict activity recommendations to maximum 5 suggestions per request.\n** Base activity planning primarily on \"preferences.activities\" when provided; default to destination's most popular attractions when preferences are empty or absent.\n** Interpret \"preferences.accommodations\" to determine accommodation type; assume \"hotel\" when unspecified or empty.\n** Apply expert assumptions for missing information based on destination norms and traveller profiles.\n** Structure all output in the exact JSON format specified with complete data structures.\n** Include image URLs when returned by search tools; use \"Not available\" when images are not provided.\n** Ensure all recommendations are practical, bookable, and align with stated or inferred preferences."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -752,
+        -192
+      ],
+      "id": "8e8abb54-944c-4ac4-a77f-b95bdc4076ad",
+      "name": "Planner Agent"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"title\": \"Travel Plan Output Schema\",\n  \"description\": \"JSON schema for travel planning output containing flights, activities, accommodations, and request summary with image support\",\n  \"required\": [\"flights\", \"activities\", \"accommodations\", \"request_info\"],\n  \"properties\": {\n    \"flights\": {\n      \"type\": \"array\",\n      \"maxItems\": 3,\n      \"description\": \"Array of flight recommendations (maximum 3)\",\n      \"items\": {\n        \"type\": \"object\",\n        \"required\": [\"flight_number\", \"airline\", \"departure_airport\", \"arrival_airport\", \"departure_time\", \"arrival_time\", \"duration\", \"stops\", \"price\", \"booking_class\", \"aircraft_type\", \"image_url\"],\n        \"properties\": {\n          \"flight_number\": {\n            \"type\": \"string\",\n            \"description\": \"Flight number identifier\"\n          },\n          \"airline\": {\n            \"type\": \"string\",\n            \"description\": \"Airline name\"\n          },\n          \"departure_airport\": {\n            \"type\": \"string\",\n            \"description\": \"Departure airport code or name\"\n          },\n          \"arrival_airport\": {\n            \"type\": \"string\",\n            \"description\": \"Arrival airport code or name\"\n          },\n          \"departure_time\": {\n            \"type\": \"string\",\n            \"description\": \"Departure time with date and timezone\"\n          },\n          \"arrival_time\": {\n            \"type\": \"string\",\n            \"description\": \"Arrival time with date and timezone\"\n          },\n          \"duration\": {\n            \"type\": \"string\",\n            \"description\": \"Total flight duration\"\n          },\n          \"stops\": {\n            \"type\": \"string\",\n            \"description\": \"Number and location of stops or 'Direct'\"\n          },\n          \"price\": {\n            \"type\": \"string\",\n            \"description\": \"Flight price with currency\"\n          },\n          \"booking_class\": {\n            \"type\": \"string\",\n            \"description\": \"Booking class (Economy, Business, First, etc.)\"\n          },\n          \"aircraft_type\": {\n            \"type\": \"string\",\n            \"description\": \"Aircraft model and type\"\n          },\n          \"image_url\": {\n            \"type\": \"string\",\n            \"description\": \"URL to airline logo or aircraft image, 'Not available' if not provided\"\n          }\n        }\n      }\n    },\n    \"activities\": {\n      \"type\": \"array\",\n      \"maxItems\": 5,\n      \"description\": \"Array of activity recommendations (maximum 5)\",\n      \"items\": {\n        \"type\": \"object\",\n        \"required\": [\"name\", \"description\", \"location\", \"address\", \"duration\", \"price\", \"category\", \"rating\", \"booking_required\", \"opening_hours\", \"best_time_to_visit\", \"image_url\"],\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\",\n            \"description\": \"Activity name or title\"\n          },\n          \"description\": {\n            \"type\": \"string\",\n            \"description\": \"Detailed activity description\"\n          },\n          \"location\": {\n            \"type\": \"string\",\n            \"description\": \"General location or area\"\n          },\n          \"address\": {\n            \"type\": \"string\",\n            \"description\": \"Specific address\"\n          },\n          \"duration\": {\n            \"type\": \"string\",\n            \"description\": \"Estimated duration for the activity\"\n          },\n          \"price\": {\n            \"type\": \"string\",\n            \"description\": \"Activity cost with currency or 'Free'\"\n          },\n          \"category\": {\n            \"type\": \"string\",\n            \"description\": \"Activity category (cultural, adventure, dining, etc.)\"\n          },\n          \"rating\": {\n            \"type\": \"string\",\n            \"description\": \"Rating score out of 5 or review platform rating\"\n          },\n          \"booking_required\": {\n            \"type\": \"boolean\",\n            \"description\": \"Whether advance booking is required\"\n          },\n          \"opening_hours\": {\n            \"type\": \"string\",\n            \"description\": \"Operating hours or schedule\"\n          },\n          \"best_time_to_visit\": {\n            \"type\": \"string\",\n            \"description\": \"Recommended time of day or season to visit\"\n          },\n          \"image_url\": {\n            \"type\": \"string\",\n            \"description\": \"URL to activity or attraction image, 'Not available' if not provided\"\n          }\n        }\n      }\n    },\n    \"accommodations\": {\n      \"type\": \"array\",\n      \"description\": \"Array of accommodation recommendations\",\n      \"items\": {\n        \"type\": \"object\",\n        \"required\": [\"name\", \"address\", \"location_description\", \"accommodation_type\", \"room_type\", \"price_per_night\", \"total_price\", \"check_in_date\", \"check_out_date\", \"amenities\", \"rating\", \"review_count\", \"cancellation_policy\", \"distance_to_city_centre\", \"image_url\"],\n        \"properties\": {\n          \"name\": {\n            \"type\": \"string\",\n            \"description\": \"Property name\"\n          },\n          \"address\": {\n            \"type\": \"string\",\n            \"description\": \"Full property address\"\n          },\n          \"location_description\": {\n            \"type\": \"string\",\n            \"description\": \"Neighbourhood or area description\"\n          },\n          \"accommodation_type\": {\n            \"type\": \"string\",\n            \"description\": \"Type of accommodation (hotel, hostel, apartment, etc.)\"\n          },\n          \"room_type\": {\n            \"type\": \"string\",\n            \"description\": \"Room category or type\"\n          },\n          \"price_per_night\": {\n            \"type\": \"string\",\n            \"description\": \"Nightly rate with currency\"\n          },\n          \"total_price\": {\n            \"type\": \"string\",\n            \"description\": \"Total cost for entire stay with currency\"\n          },\n          \"check_in_date\": {\n            \"type\": \"string\",\n            \"description\": \"Check-in date\"\n          },\n          \"check_out_date\": {\n            \"type\": \"string\",\n            \"description\": \"Check-out date\"\n          },\n          \"amenities\": {\n            \"type\": \"array\",\n            \"description\": \"List of property amenities\",\n            \"items\": {\n              \"type\": \"string\"\n            }\n          },\n          \"rating\": {\n            \"type\": \"string\",\n            \"description\": \"Property rating score\"\n          },\n          \"review_count\": {\n            \"type\": \"string\",\n            \"description\": \"Number of reviews\"\n          },\n          \"cancellation_policy\": {\n            \"type\": \"string\",\n            \"description\": \"Cancellation terms and conditions\"\n          },\n          \"distance_to_city_centre\": {\n            \"type\": \"string\",\n            \"description\": \"Distance from city centre with travel time\"\n          },\n          \"image_url\": {\n            \"type\": \"string\",\n            \"description\": \"URL to property image, 'Not available' if not provided\"\n          },\n          \"website_url\": {\n            \"type\": \"string\",\n            \"description\": \"URL to property website, 'Not available' if not provided\"\n          }\n        }\n      }\n    },\n    \"request_info\": {\n      \"type\": \"string\",\n      \"description\": \"Comprehensive summary of the original user request including preferences and planning parameters written in third person\"\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        192
+      ],
+      "id": "ed9e1244-b381-4e8b-9bb6-82e219af327e",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Makes an HTTP request and returns the response data for hotel details.",
+        "url": "https://serpapi.com/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `The q value should be the same as the one used in the \"Accommodations\" tool.`, 'string') }}"
+            },
+            {
+              "name": "property_token",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', `The property_token value can be obtained from each item returned by the \"Accommodations\" tool.`, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        -304,
+        176
+      ],
+      "id": "83889e0d-4ed4-48d8-bf57-61164568f3cd",
+      "name": "Accommodations Details",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "2ZoUPPiB8poZWCb2",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {
+          "search_depth": "advanced",
+          "max_results": 5,
+          "include_images": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Include_Images', ``, 'boolean') }}"
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        176
+      ],
+      "id": "dc18b3ce-3ce2-4257-89f9-dcfb3fb206dc",
+      "name": "Activities",
+      "credentials": {
+        "tavilyApi": {
+          "id": "g0Ixh4ZTannKRa1Q",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "google_flights",
+        "departure_id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Departure_airport_code___location_kgmid__departure_id_', `departure_id must not be empty.`, 'string') }}",
+        "arrival_id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Arrival_airport_code___location_kgmid__arrival_id_', `arrival_id must not be empty.`, 'string') }}",
+        "outbound_date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Outbound_Date__outbound_date_', `The date of departure must not be in the past.`, 'string') }}",
+        "return_date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Return_Date__return_date_', `The date of return must not be in the past and must be greater than  outboud_date .`, 'string') }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApiTool",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        240
+      ],
+      "id": "2831a13a-d920-47f4-87db-9d79face9089",
+      "name": "Google_flights search in SerpApi",
+      "credentials": {
+        "serpApi": {
+          "id": "aXcCG1SAlu8bEA5B",
+          "name": "SerpApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Makes an HTTP request and returns the response data for hotel details.",
+        "url": "https://serpapi.com/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google_hotels"
+            },
+            {
+              "name": "check_in_date",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', ``, 'string') }}"
+            },
+            {
+              "name": "check_out_date",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters2_Value', ``, 'string') }}"
+            },
+            {
+              "name": "adults",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters3_Value', `Number of adult travelers must me greater or equal 1. `, 'string') }}"
+            },
+            {
+              "name": "sort_by",
+              "value": "8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        -480,
+        176
+      ],
+      "id": "060ffdd2-3edb-4eb2-98a3-28cdb9422d00",
+      "name": "Accommodations",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "2ZoUPPiB8poZWCb2",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "planner",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1584,
+        -192
+      ],
+      "id": "62afa150-52ad-499d-9d18-3bb852318e2c",
+      "name": "Webhook1",
+      "webhookId": "c957a00f-b7ce-4dea-bbed-ebe604123085"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Extract User Request",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract User Request": {
+      "main": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract User Request",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Planner Agent": {
+      "main": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accommodations Details": {
+      "ai_tool": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Activities": {
+      "ai_tool": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google_flights search in SerpApi": {
+      "ai_tool": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accommodations": {
+      "ai_tool": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Extract User Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "97989aae-6e7c-4361-9b7f-d148dfb67126",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "05f34a1948a357236ecec79de7a030708cb7f93d2754bb153367038feb28d7b9"
+  },
+  "id": "1hlCj1INSRT7F2FO",
+  "tags": []
+}
